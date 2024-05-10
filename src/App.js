@@ -1,25 +1,50 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect, useRef } from "react";
+import "./App.css";
 
-function App() {
+const App = () => {
+  const [value, setValue] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+  let timerId = useRef(null);
+  const startTimer = () => {
+    setIsRunning(true);
+  };
+  const stopTimer = () => {
+    setIsRunning(false);
+  };
+  const reset = () => {
+    setIsRunning(false);
+    setValue(0);
+  };
+
+  useEffect(() => {
+    // let timerId=0;
+
+    if (isRunning) {
+      timerId.current = setInterval(() => {
+        setValue((prevValue) => prevValue + 1);
+      }, 1000);
+    } else {
+      clearInterval(timerId.current);
+    }
+
+    return () => {
+      clearInterval(timerId.current);
+    };
+  }, [isRunning]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Counter</h1>
+      <h2>{value}</h2>
+      <button onClick={startTimer}>Start</button>
+      <button onClick={stopTimer} disabled={value === 0}>
+        Stop
+      </button>
+      <button onClick={reset} disabled={value === 0}>
+        Reset
+      </button>
     </div>
   );
-}
+};
 
 export default App;
